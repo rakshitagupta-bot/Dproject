@@ -1,5 +1,5 @@
 /* ============================================================
-   EARN THE REST â€” Duolingo PRD
+   EARN THE REST — Duolingo PRD
    Visual format: duolingoproject.rakshitagupta.com
    ============================================================ */
 
@@ -26,13 +26,13 @@ body {
   line-height: 1.65;
 }
 
-/* ---- Layout: TOC + Document side by side ---- */
+/* ---- Layout: floating TOC card beside document ---- */
 .layout {
   display: flex;
   align-items: flex-start;
   max-width: 1100px;
   margin: 0 auto;
-  background: #ffffff;
+  gap: 20px;
 }
 
 /* ---- Page Wrapper ---- */
@@ -46,81 +46,23 @@ body {
 .page h1,
 .page h2,
 .page h3 {
-  scroll-margin-top: 24px;
+  scroll-margin-top: 32px;
 }
 
 /* ============================================================
-   TABLE OF CONTENTS SIDEBAR
+   FLOATING TOC CARD — Duolingo brand style
    ============================================================ */
 
 .toc-sidebar {
   width: 220px;
   flex-shrink: 0;
+  align-self: flex-start;      /* card only as tall as its content */
   position: sticky;
-  top: 0;
-  max-height: 100vh;
-  overflow-y: auto;
-  padding: 32px 14px 40px 20px;
-  border-right: 1px solid #eeeeee;
+  top: 24px;
   background: #ffffff;
-  scrollbar-width: thin;
-  scrollbar-color: #e0e0e0 transparent;
-}
-
-.toc-sidebar::-webkit-scrollbar { width: 4px; }
-.toc-sidebar::-webkit-scrollbar-track { background: transparent; }
-.toc-sidebar::-webkit-scrollbar-thumb {
-  background: #e0e0e0;
-  border-radius: 4px;
-}
-
-/* TOC header row */
-.toc-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.toc-title {
-  font-size: 0.65rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #aaaaaa;
-}
-
-/* Mobile toggle (hidden on desktop) */
-.toc-toggle-btn {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px 6px;
-  color: #aaaaaa;
-  font-size: 1rem;
-  line-height: 1;
-  transition: color 0.15s;
-  border-radius: 4px;
-}
-
-.toc-toggle-btn:hover { color: #555555; }
-
-.toc-toggle-btn:focus-visible {
-  outline: 2px solid #58cc02;
-  outline-offset: 2px;
-}
-
-.toc-toggle-icon {
-  display: inline-block;
-  transition: transform 0.25s ease;
-}
-
-/* Thin divider */
-.toc-divider {
-  height: 1px;
-  background: #eeeeee;
-  margin-bottom: 12px;
+  border: 1.5px solid #e5e5e5;
+  border-radius: 16px;
+  overflow: hidden;            /* clips children to rounded corners */
 }
 
 /* TOC list */
@@ -130,44 +72,49 @@ body {
   margin: 0;
 }
 
-.toc-item { margin: 0; }
+.toc-item {
+  border-bottom: 1.5px solid #e5e5e5;
+}
 
-/* TOC links */
+.toc-item:last-child {
+  border-bottom: none;
+}
+
+/* TOC links — Duolingo row layout with right-side chevron */
 .toc-item a {
-  display: block;
-  font-size: 0.79rem;
-  font-weight: 600;
-  color: #888888;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 13px 14px 13px 18px;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #3c3c3c;
   text-decoration: none;
-  padding: 5px 8px;
-  border-radius: 6px;
-  border-left: 2px solid transparent;
-  line-height: 1.4;
-  word-break: break-word;
-  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+  line-height: 1.3;
+  transition: background-color 0.12s, color 0.12s;
 }
 
-.toc-item a:hover {
-  color: #222222;
-  background-color: #f5f5f5;
-}
+.toc-item a span { flex: 1; }
+
+.toc-item a:hover { background-color: #f7f7f7; }
 
 .toc-item a:focus-visible {
   outline: 2px solid #58cc02;
-  outline-offset: 2px;
-  color: #222222;
+  outline-offset: -2px;
 }
 
-/* Active state */
-.toc-item a.toc-active {
-  color: #222222;
-  font-weight: 800;
-  border-left-color: #58cc02;
-  background-color: #f0fce8;
+/* Chevron icon */
+.toc-chevron {
+  flex-shrink: 0;
+  opacity: 0.45;
+  transition: opacity 0.12s, color 0.12s;
 }
 
-/* All TOC items are H2 â€” flat list, no indentation needed */
-.toc-h2 > a { padding-left: 8px; }
+/* Active — Duolingo green */
+.toc-item a.toc-active            { color: #58cc02; }
+.toc-item a.toc-active .toc-chevron { opacity: 0.75; }
+.toc-item a.toc-active:hover      { background-color: #f0fce8; }
 
 /* ---- Header ---- */
 .header {
@@ -474,6 +421,78 @@ li strong {
   grid-column: 1 / -1;
 }
 
+/* ---- Hamburger button — desktop: hidden ---- */
+.toc-hamburger {
+  display: none;
+}
+
+/* ---- Backdrop — invisible/inactive on desktop ---- */
+.toc-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 98;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.toc-backdrop.toc-open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ---- Drawer close button — desktop: hidden ---- */
+.toc-close {
+  display: none;
+}
+
+/* ---- Body scroll lock when drawer is open ---- */
+.toc-body-lock {
+  overflow: hidden;
+}
+
+/* ---- Solution card body: 4 cards left + prototype right ---- */
+.solution-body {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 18px;
+}
+
+.solution-left {
+  flex: 1;
+  min-width: 0;
+}
+
+/* sub-cards inside solution-body: single column — left lane is ~226px, no room for 2 cols */
+.solution-body .solution-sub {
+  margin-top: 0;
+  grid-template-columns: 1fr;
+}
+
+/* figma-col: right-side flex column containing iframe + hint */
+.figma-col {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.figma-col .figma-wrap {
+  margin-top: 0;
+}
+
+/* Loading hint text below prototype */
+.figma-hint {
+  font-style: italic;
+  opacity: 0.6;
+  font-size: 0.875rem; /* 14px — 2px smaller than 16px body */
+  color: #444444;
+  text-align: center;
+  line-height: 1.5;
+}
+
 /* ---- Figma Embed ---- */
 .figma-wrap {
   margin-top: 24px;
@@ -482,11 +501,46 @@ li strong {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+/* Desktop: exact 450×830 as set in HTML attributes */
 .figma-wrap iframe {
   display: block;
-  width: 100%;
-  height: 450px;
+  width: 450px;
+  height: 830px;
   border: none;
+}
+
+/* ---- About Me section ---- */
+.about-row {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  margin-bottom: 40px;
+}
+
+.about-row:last-child { margin-bottom: 0; }
+
+/* All about-me columns are equal 50/50 — photos take half the container */
+.about-col-2 { flex: 1; min-width: 0; }
+.about-col-1 { flex: 1; min-width: 0; }
+
+.about-photo {
+  width: 100%;
+  display: block;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+.about-sig {
+  margin-top: 24px;
+  font-style: italic;
+  font-weight: 700;
+  color: #444444;
+  line-height: 1.8;
+}
+
+.about-sig a {
+  color: #1cb0f6;
+  font-weight: 700;
 }
 
 /* ---- Content Images ---- */
@@ -670,6 +724,7 @@ tbody tr:nth-child(even) td {
 
 /* ---- Floating CTA Button ---- */
 .fab-container {
+  display: none; /* hidden for now — re-enable when needed */
   position: fixed;
   bottom: 32px;
   left: 50%;
@@ -729,37 +784,92 @@ tbody tr:nth-child(even) td {
   margin-bottom: 0;
 }
 
-/* ---- Responsive: TOC switches to top-collapsible below 960px ---- */
+/* ---- Responsive: hamburger drawer below 960px ---- */
 @media (max-width: 960px) {
+
+  /* Layout: TOC is fixed/out-of-flow, page fills full width */
   .layout {
     flex-direction: column;
+    gap: 0;
     max-width: 860px;
   }
 
+  /* TOC becomes a fixed left drawer */
   .toc-sidebar {
-    width: 100%;
-    position: static;
-    max-height: none;
-    overflow: visible;
-    border-right: none;
-    border-bottom: 1px solid #eeeeee;
-    padding: 16px 24px 18px;
-    background: #fafafa;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0 16px 16px 0;
+    border: 1.5px solid #e5e5e5;
+    border-left: none;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+    overflow-y: auto;
+    padding-top: 56px;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+    background: #ffffff;
   }
 
-  .toc-toggle-btn { display: flex; }
-
-  .toc-list {
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.3s ease;
+  .toc-sidebar.toc-open {
+    transform: translateX(0);
   }
 
-  .toc-list.toc-open { max-height: 800px; }
+  /* Hamburger button */
+  .toc-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 101;
+    width: 44px;
+    height: 44px;
+    background: #ffffff;
+    border: 1.5px solid #e5e5e5;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
+    padding: 0;
+  }
 
-  .toc-divider { margin-top: 12px; }
+  .toc-hamburger span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: #3c3c3c;
+    border-radius: 2px;
+  }
 
-  .toc-item a { padding: 6px 10px; }
+  /* Close (×) button inside drawer */
+  .toc-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.6rem;
+    color: #888888;
+    border-radius: 8px;
+    line-height: 1;
+    transition: background-color 0.12s, color 0.12s;
+  }
+
+  .toc-close:hover { background: #f0f0f0; color: #333333; }
+
+  .toc-item a { padding: 13px 18px; }
 }
 
 /* ---- Responsive ---- */
@@ -803,8 +913,23 @@ tbody tr:nth-child(even) td {
     gap: 10px;
   }
 
+  .solution-body {
+    flex-direction: column;
+  }
+
+  .solution-body .solution-sub {
+    grid-template-columns: 1fr;
+  }
+
   .figma-wrap iframe {
-    height: 320px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 9 / 16;
+  }
+
+  .about-row {
+    flex-direction: column;
+    gap: 20px;
   }
 
   .footer {
