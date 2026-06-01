@@ -5,9 +5,14 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700;1,800;1,900&display=swap');
 
-/* ---- Smooth scroll ---- */
+/* ---- Smooth scroll + overflow lock ---- */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden; /* prevent viewport-level horizontal scroll */
+}
+
+body {
+  overflow-x: hidden;
 }
 
 /* ---- Reset ---- */
@@ -40,6 +45,13 @@ body {
   flex: 1;
   min-width: 0;
   background: #ffffff;
+  overflow-x: hidden; /* prevent content from breaking mobile layout */
+}
+
+/* ---- Global image guard ---- */
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* ---- Scroll offset for headings ---- */
@@ -501,10 +513,11 @@ li strong {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Desktop: exact 450×830 as set in HTML attributes */
+/* Desktop: 450×830 — max-width: 100% ensures it never overflows its container */
 .figma-wrap iframe {
   display: block;
   width: 450px;
+  max-width: 100%;
   height: 830px;
   border: none;
 }
@@ -870,21 +883,41 @@ tbody tr:nth-child(even) td {
   .toc-close:hover { background: #f0f0f0; color: #333333; }
 
   .toc-item a { padding: 13px 18px; }
+
+  /* Stack solution cards so 450px iframe never causes horizontal overflow */
+  .solution-body {
+    flex-direction: column;
+  }
+
+  .figma-col {
+    width: 100%;
+  }
+
+  .figma-wrap iframe {
+    width: 100%;
+    height: 75vh;
+    aspect-ratio: unset;
+  }
+
+  /* Tighten solution-card padding on tablet */
+  .solution-card {
+    padding: 20px 20px;
+  }
 }
 
-/* ---- Responsive ---- */
+/* ---- Responsive: small phones ---- */
 @media (max-width: 640px) {
   .section,
   .section-band {
-    padding: 32px 24px;
+    padding: 28px 16px;
   }
 
   .header {
-    padding: 40px 24px 32px;
+    padding: 32px 16px 28px;
   }
 
   .header h1 {
-    font-size: 1.7rem;
+    font-size: 1.55rem;
   }
 
   .card-grid,
@@ -892,15 +925,24 @@ tbody tr:nth-child(even) td {
     grid-template-columns: 1fr;
   }
 
+  .solution-card {
+    padding: 16px 12px;
+    border-radius: 12px;
+  }
+
+  .sub-card {
+    padding: 12px 14px;
+  }
+
   .fab-container {
     bottom: 24px;
-    width: calc(100% - 48px);
+    width: calc(100% - 32px);
   }
 
   .duo-fab {
     width: 100%;
-    padding: 18px 24px;
-    font-size: 0.95rem;
+    padding: 16px 20px;
+    font-size: 0.9rem;
   }
 
   .phase-item {
@@ -910,29 +952,41 @@ tbody tr:nth-child(even) td {
 
   .quote-block {
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
 
-  .solution-body {
-    flex-direction: column;
-  }
-
+  /* solution-body already stacked from 960px block */
   .solution-body .solution-sub {
     grid-template-columns: 1fr;
   }
 
   .figma-wrap iframe {
     width: 100%;
-    height: auto;
-    aspect-ratio: 9 / 16;
+    height: 65vh;
+    aspect-ratio: unset;
+  }
+
+  .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .about-row {
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
+  }
+
+  .about-col-1,
+  .about-col-2 {
+    width: 100%;
+  }
+
+  .flow-steps {
+    gap: 10px;
   }
 
   .footer {
-    padding: 24px;
+    padding: 20px 16px;
   }
 }
