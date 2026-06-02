@@ -8,11 +8,14 @@
 /* ---- Smooth scroll + overflow lock ---- */
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden; /* prevent viewport-level horizontal scroll */
+  overflow-x: hidden;
 }
 
+/* body must NOT have overflow-x: hidden — it silently creates a new scroll container
+   in some browsers, which traps position:sticky inside it and prevents it from
+   sticking to the viewport. Horizontal overflow is already handled by html above. */
 body {
-  overflow-x: hidden;
+  overflow-x: visible;
 }
 
 /* ---- Reset ---- */
@@ -45,7 +48,7 @@ body {
   flex: 1;
   min-width: 0;
   background: #ffffff;
-  overflow-x: hidden; /* prevent content from breaking mobile layout */
+  overflow-x: hidden;
 }
 
 /* ---- Global image guard ---- */
